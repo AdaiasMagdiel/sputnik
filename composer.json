@@ -1,0 +1,22 @@
+{
+    "name": "adaiasmagdiel/sputnik",
+    "description": "Sputnik is a PHP-based URL shortener that simplifies the process of creating and managing shortened links. It's designed with simplicity and efficiency in mind, offering a straightforward API for developers to integrate URL shortening functionality into their applications. Sputnik is perfect for developers looking to streamline their web projects with a reliable, easy-to-use link shortening tool.",
+    "type": "project",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "AdaiasMagdiel\\Sputnik\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Adaías Magdiel",
+            "email": "eu@adaiasmagdiel.com"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {
+        "adaiasmagdiel/hermes": "^1.0",
+        "league/plates": "^3.5"
+    }
+}
