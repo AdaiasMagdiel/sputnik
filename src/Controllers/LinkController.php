@@ -2,10 +2,18 @@
 
 namespace AdaiasMagdiel\Sputnik\Controllers;
 
+use AdaiasMagdiel\Sputnik\Services\LinkService;
+use AdaiasMagdiel\Sputnik\Repositories\LinkRepository;
+
 class LinkController extends Controller
 {
+	protected LinkService $service;
+	protected LinkRepository $repository;
+
 	public function __construct()
 	{
+		$this->service = new LinkService();
+		$this->repository = new LinkRepository();
 		parent::__construct();
 	}
 
@@ -21,12 +29,16 @@ class LinkController extends Controller
 		$linkRaw = "";
 
 		$link = $_POST['link'] ?? "";
+		if (substr($link, 0, 4) !== 'http') {
+			$link = 'https://' . $link;
+		}
+
 		if (!filter_var($link, FILTER_VALIDATE_URL)) {
 			$errors = ["This value should be a valid URL."];
 			$linkRaw = $link;
 		}
 
-		$result = $this->generateShortLink($link);
+		$result = $this->service->generateShortLink($link);
 
 		$this->renderTemplate("index", [
 			"errors" => $errors,
@@ -35,30 +47,18 @@ class LinkController extends Controller
 		]);
 	}
 
-	public function generateShortLink(string $link)
+	public function get(string $id)
 	{
-		$id = $this->generateIdentifier();
-		return $id;
-	}
+		$res = $this->repository->getLinkByIdentifier($id);
 
-	public function generateIdentifier(int $limit = 7)
-	{
-		$chars = 'abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ-_.';
-		$rand_str = '';
-		$max = mb_strlen($chars) - 1;
-
-		for ($i = 0; $i < $limit; $i++) {
-			$rand_index = random_int(0, $max);
-			$char = $chars[$rand_index];
-
-			while ($char === substr($rand_str, -1)) {
-				$rand_index = random_int(0, $max);
-				$char = $chars[$rand_index];
-			}
-
-			$rand_str .= $char;
+		if (!$res) {
+			http_response_code(404);
+			echo "There's no link with this identifier in the database.";
+			die();
 		}
 
-		return $rand_str;
+		$location = $res->link;
+		header("Location: {$location}", true, 302);
+		echo "You are being redirected to the following URL: {$location}.";
 	}
 }
