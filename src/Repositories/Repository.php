@@ -14,6 +14,7 @@ class Repository
 	public function __construct()
 	{
 		$this->conn = Connection::getConnection();
+		$this->createTables();
 	}
 
 	protected function createTables()
