@@ -7,21 +7,17 @@ class LinkRepository extends Repository
 	protected string $table = "links";
 	protected array $fields = [
 		"id" => "INTEGER PRIMARY KEY AUTOINCREMENT",
-		"link" => "VARCHAR(255) NOT NULL UNIQUE",
+		"link" => "VARCHAR(255) NOT NULL",
 		"identifier" => "VARCHAR(25) NOT NULL UNIQUE"
 	];
 
 	public function __construct()
 	{
 		parent::__construct();
-		$this->createTables();
 	}
 
 	public function saveShortLink(string $link, string $identifier)
 	{
-		$res = $this->getIdentifierByLink($link);
-		if ($res) return $res->identifier;
-
 		$sql = "INSERT INTO links(link, identifier) VALUES(:link, :identifier);";
 		$stmt = $this->conn->prepare($sql);
 
