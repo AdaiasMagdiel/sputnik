@@ -2,6 +2,7 @@
 
 namespace AdaiasMagdiel\Sputnik\Controllers;
 
+use AdaiasMagdiel\Sputnik\Classes\Response;
 use AdaiasMagdiel\Sputnik\Services\LinkService;
 use AdaiasMagdiel\Sputnik\Repositories\LinkRepository;
 
@@ -19,7 +20,7 @@ class LinkController extends Controller
 
 	public function index()
 	{
-		$this->renderTemplate("index");
+		Response::send($this->template("index"));
 	}
 
 	public function create()
@@ -40,11 +41,13 @@ class LinkController extends Controller
 
 		$result = $this->service->generateShortLink($link);
 
-		$this->renderTemplate("index", [
-			"errors" => $errors,
-			"result" => $result,
-			"link" => $linkRaw
-		]);
+		Response::send(
+			$this->template("index", [
+				"errors" => $errors,
+				"result" => $result,
+				"link" => $linkRaw
+			])
+		);
 	}
 
 	public function get(string $id)
@@ -52,13 +55,14 @@ class LinkController extends Controller
 		$res = $this->repository->getLinkByIdentifier($id);
 
 		if (!$res) {
-			http_response_code(404);
-			echo "There's no link with this identifier in the database.";
+			Response::send(
+				"There's no link with this identifier in the database.",
+				404
+			);
 			die();
 		}
 
 		$location = $res->link;
-		header("Location: {$location}", true, 302);
-		echo "You are being redirected to the following URL: {$location}.";
+		Response::redirect($location);
 	}
 }
