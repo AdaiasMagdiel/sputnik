@@ -4,7 +4,8 @@ namespace AdaiasMagdiel\Sputnik\Controllers;
 
 use League\Plates\Engine;
 
-class Controller {
+class Controller
+{
 	protected $templates;
 
 	protected function __construct()
@@ -15,5 +16,10 @@ class Controller {
 	protected function renderTemplate(string $template, array $data = [])
 	{
 		echo $this->templates->render($template, $data);
+	}
+
+	protected function template(string $template, array $data = [])
+	{
+		return $this->templates->render($template, $data);
 	}
 }
